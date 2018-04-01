@@ -3,9 +3,9 @@ import React, {Component} from 'react';
 class Book extends Component {
 
   //initialize component fields
-  title = this.props.title;
-  author = this.props.author;
-  coverImage = this.props.coverImage;
+  book = this.props.book;
+
+  coverImage = `url(${this.book.imageLinks.smallThumbnail})`;
   width = this.props.width || 128;
   height = this.props.height || 193;
 
@@ -30,8 +30,8 @@ class Book extends Component {
             </select>
           </div>
         </div>
-        <div className="book-title">{this.title}</div>
-        <div className="book-authors">{this.author}</div>
+        <div className="book-title">{this.book.title}</div>
+        <div className="book-authors">{this.book.authors.join('\n')}</div>
       </div>
     );
   }
