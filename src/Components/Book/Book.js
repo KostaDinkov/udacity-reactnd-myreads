@@ -1,11 +1,11 @@
 import React, {Component} from 'react';
+import * as Utils from '../../Utils/Utils';
 
 class Book extends Component {
 
   //initialize component fields
   book = this.props.book;
-
-  coverImage = `url(${this.book.imageLinks.smallThumbnail})`;
+  coverImageUrl = `url(${Utils.getProp(['book', 'imageLinks', 'smallThumbnail'], this.props, '')})`;
   width = this.props.width || 128;
   height = this.props.height || 193;
 
@@ -18,7 +18,7 @@ class Book extends Component {
             style={{
               width: this.width,
               height: this.height,
-              backgroundImage: this.coverImage
+              backgroundImage: this.coverImageUrl
             }}/>
           <div className="book-shelf-changer">
             <select>
@@ -30,8 +30,9 @@ class Book extends Component {
             </select>
           </div>
         </div>
-        <div className="book-title">{this.book.title}</div>
-        <div className="book-authors">{this.book.authors.join('\n')}</div>
+        <div className="book-title">{Utils.getProp(['book', 'title'], this.props, 'No title information')}</div>
+        <div className="book-authors">{Utils.getProp(['book', 'authors'], this.props, 'No author information')
+                                            .join('\n')}</div>
       </div>
     );
   }
