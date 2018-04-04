@@ -17,11 +17,22 @@ class Search extends Component {
     if (query) {
 
       BooksAPI.search(query)
-              .then((results) => this.setState((prevState) => {
+              .then((results) => this.setState(() => {
                 return { searchResults: results, query: query };
               }));
     }
   };
+
+  getBookIfCollected(resultBook, collection) {
+    for (let shelf in collection) {
+      for (let book in collection[shelf]) {
+        if (collection[shelf][book].id === resultBook.id) {
+          return collection[shelf][book];
+        }
+      }
+    }
+    return resultBook;
+  }
 
   render() {
     //console.log(this.state.searchResults);
@@ -48,9 +59,11 @@ class Search extends Component {
         </div>
         <div className="search-books-results">
           <ol className="books-grid">
-            {console.log(this.state.searchResults)}
-            {this.state.searchResults.map((book) =>
-              (<li key={book.id}><Book book={book}/></li>))
+
+            {(this.state.searchResults) ? this.state.searchResults.map((book) =>
+
+              (<li key={book.id}><Book book={this.getBookIfCollected(book, this.props.collected)}/></li>)) : (
+              <div>No results found</div>)
             }
 
           </ol>

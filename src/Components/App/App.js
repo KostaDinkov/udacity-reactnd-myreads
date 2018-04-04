@@ -7,36 +7,50 @@ import {Route, Link} from 'react-router-dom';
 
 class BooksApp extends React.Component {
   state = {
-    /**
-     * TODO: Instead of using this state variable to keep track of which page
-     * we're on, use the URL in the browser's address bar. This will ensure that
-     * users can use the browser's back and forward buttons to navigate between
-     * pages, as well as provide a good URL they can bookmark and share.
-     */
-    currentlyReading: [],
-    wantToRead: [],
-    read: [],
+    myCollection: {
+      currentlyReading: [],
+      wantToRead: [],
+      read: []
+    },
     showSearchPage: false
+  };
+
+  onShelfChange = () => {
+    //reload books every time a book changes shelf
+    console.log('onShelfChange called...');
+    this.loadMyBooks();
   };
 
   componentDidMount() {
 
-    // load users books from a remote store
-    BooksAPI.getAll()
-            .then((data) => this.setState(() => {
-              data.forEach(book => {
-                this.state[book.shelf].push(book);
+    //let myCollection=this.loadMyBooks();
+    this.loadMyBooks();
 
-              });
-              console.log(this.state);
-            }));
+  }
+
+  loadMyBooks() {
+
+    return BooksAPI.getAll()
+                   .then((data) => {
+                     let myCollection = { currentlyReading: [], wantToRead: [], read: [] };
+                     data.forEach(book => myCollection[book.shelf].push(book));
+                     this.setState({ myCollection });
+                     console.log(this.state);
+
+                   });
+
   }
 
   render() {
+    const currentlyReading = this.state.myCollection.currentlyReading || [];
+    const wantToRead = this.state.myCollection.wantToRead || [];
+    const read = this.state.myCollection.read || [];
+
     return (
       <div className="app">
 
-        <Route exact path="/search" component={Search}/>
+        <Route exact path="/search" render={() =>
+          <Search collected={this.state.myCollection}/>}/>
 
         <Route exact path="/" render={() =>
           <div className="list-books">
@@ -45,9 +59,17 @@ class BooksApp extends React.Component {
             </div>
             <div className="list-books-content">
               <div>
-                <BookShelf books={this.state.currentlyReading} shelfName='Currently Reading'/>
-                <BookShelf books={this.state.wantToRead} shelfName='Want to Read'/>
-                <BookShelf books={this.state.read} shelfName='Read'/>
+                <BookShelf shelfName={'Currently Reading'}
+                           books={currentlyReading}
+                           onShelfChange={this.onShelfChange}/>
+
+                <BookShelf shelfName='Want to Read'
+                           books={wantToRead}
+                           onShelfChange={this.onShelfChange}/>
+
+                <BookShelf shelfName='Read'
+                           books={read}
+                           onShelfChange={this.onShelfChange}/>
               </div>
             </div>
             <div className="open-search">
