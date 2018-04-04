@@ -31,8 +31,7 @@ class Book extends Component {
           </div>
         </div>
         <div className="book-title">{Utils.getProp(['book', 'title'], this.props, 'No title information')}</div>
-        <div className="book-authors">{Utils.getProp(['book', 'authors'], this.props, 'No author information')
-                                            .join('\n')}</div>
+        <div className="book-authors">{Utils.getProp(['book', 'authors'], this.props, 'No author information')}</div>
       </div>
     );
   }
