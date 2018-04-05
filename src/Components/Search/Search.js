@@ -62,7 +62,10 @@ class Search extends Component {
 
             {(this.state.searchResults) ? this.state.searchResults.map((book) =>
 
-              (<li key={book.id}><Book book={this.getBookIfCollected(book, this.props.collected)}/></li>)) : (
+              (<li key={book.id}>
+                <Book
+                  book={this.getBookIfCollected(book, this.props.collected)}
+                  onShelfChange={this.props.onShelfChange}/></li>)) : (
               <div>No results found</div>)
             }
 
