@@ -2,8 +2,8 @@ import React, {Component} from 'react';
 import {Link} from 'react-router-dom';
 import {Debounce} from 'react-throttle';
 import * as  BooksAPI from '../../BackendAPI/BooksAPI';
-
 import Book from '../Book/Book';
+
 
 class Search extends Component {
 
@@ -15,15 +15,24 @@ class Search extends Component {
   updateQuery = (query) => {
     console.log(`search input query : ${query}`);
     if (query) {
-
+      query = query.trim();
       BooksAPI.search(query)
-              .then((results) => this.setState(() => {
-                return { searchResults: results, query: query };
-              }));
+              .then((results) => {
+                if (Array.isArray(results)) {
+                  this.setState({ searchResults: results, query: query });
+                }
+                else {
+                  this.setState({ searchResults: [], query: query });
+                }
+              });
+    }
+    else {
+      this.setState({ searchResults: [], query: query });
     }
   };
 
-  getBookIfCollected(resultBook, collection) {
+  getBookIfCollected(resultBook) {
+    let collection = this.props.collected;
     for (let shelf in collection) {
       for (let book in collection[shelf]) {
         if (collection[shelf][book].id === resultBook.id) {
@@ -35,9 +44,7 @@ class Search extends Component {
   }
 
   render() {
-    //console.log(this.state.searchResults);
     return (
-
       <div className="search-books">
         <div className="search-books-bar">
           <Link to="/" className="close-search">Close</Link>
@@ -60,13 +67,15 @@ class Search extends Component {
         <div className="search-books-results">
           <ol className="books-grid">
 
-            {(this.state.searchResults) ? this.state.searchResults.map((book) =>
+            {(this.state.searchResults.length > 0 && this.state.query !== '') ? this.state.searchResults.map((book) =>
 
               (<li key={book.id}>
                 <Book
-                  book={this.getBookIfCollected(book, this.props.collected)}
-                  onShelfChange={this.props.onShelfChange}/></li>)) : (
-              <div>No results found</div>)
+                  book={this.getBookIfCollected(book)}
+                  onShelfChange={this.props.onShelfChange}/>
+              </li>))
+              :
+              (this.state.query === '') ? (<div>Start typing to search for books</div>) : (<div>No results found</div>)
             }
 
           </ol>

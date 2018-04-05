@@ -37,9 +37,8 @@ class Book extends Component {
 
   showBadge(book) {
     // show the badge only if in search mode
-    console.log(window.location.pathname);
-    return window.location.pathname === '/search' && book.hasOwnProperty('shelf');
 
+    return window.location.pathname === '/search' && book.hasOwnProperty('shelf');
   }
 
   render() {
