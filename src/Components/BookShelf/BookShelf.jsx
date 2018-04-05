@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import Book from '../Book/Book';
+import './BookShelf.css';
 
 class BookShelf extends Component {
 
@@ -19,7 +20,5 @@ class BookShelf extends Component {
       </div>
     );
   }
-
 }
-
 export default BookShelf;
