@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import * as Utils from '../../Utils/Utils';
 import * as BooksAPI from '../../BackendAPI/BooksAPI';
 import Modal from 'material-ui/Modal';
+import Tooltip from 'material-ui/Tooltip';
 
 //TODO refactor / extract component styling
 
@@ -34,15 +35,24 @@ class Book extends Component {
             .then(() => this.props.onShelfChange());
   };
 
+  showBadge(book) {
+    // show the badge only if in search mode
+    console.log(window.location.pathname);
+    return window.location.pathname === '/search' && book.hasOwnProperty('shelf');
+
+  }
+
   render() {
-    //initialize component fields
+
     const book = this.props.book;
     const coverImageUrl = `url(${Utils.getProp(['book', 'imageLinks', 'smallThumbnail'], this.props, '')})`;
     const width = this.props.width || 128;
     const height = this.props.height || 193;
+    const showBadge = this.showBadge(book);
 
     return (
       <div className="book">
+
         <div className="book-top">
           <div
             onClick={this.handleDetailView}
@@ -52,6 +62,12 @@ class Book extends Component {
               height: height,
               backgroundImage: coverImageUrl
             }}/>
+          <Tooltip title={`In Collection: ${book.shelf}`}>
+            {/* TODO fix book shelf name inside the tooltip from camelcase to title */}
+            <div style={{ display: showBadge ? '' : 'none' }} className='book-badge'/>
+          </Tooltip>
+
+
           <Modal
             aria-labelledby="simple-modal-title"
             aria-describedby="simple-modal-description"
@@ -84,6 +100,7 @@ class Book extends Component {
 
             </div>
           </Modal>
+
           <div className="book-shelf-changer">
             <select onChange={this.handleShelfChange} value={book.shelf}>
               <option value="none" disabled>Move to...</option>
@@ -103,6 +120,7 @@ class Book extends Component {
           </div>
 
         </div>
+
         <div className="book-title">{Utils.getProp(['book', 'title'], this.props, 'No title information')}</div>
         <div className="book-authors">{Utils.getProp(['book', 'authors'], this.props, 'No author information')}</div>
 
