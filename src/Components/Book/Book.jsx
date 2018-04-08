@@ -5,23 +5,13 @@ import Modal from 'material-ui/Modal';
 import Tooltip from 'material-ui/Tooltip';
 import './Book.css';
 
-
-const dialogStyle = function () {
-
-  let top = 50;
-  let left = 50;
-
-  return {
-    position: 'absolute',
-    width: '80%',
-    top: top + '%', left: left + '%',
-    transform: `translate(-${top}%, -${left}%)`,
-    border: '1px solid #e5e5e5',
-    backgroundColor: 'white',
-    boxShadow: '0 5px 15px rgba(0,0,0,.5)',
-    padding: 20
-  };
+const optionText = {
+  currentlyReading: 'Currently Reading',
+  wantToRead: 'Want to Read',
+  read: 'Read',
+  none: 'None'
 };
+
 
 class Book extends Component {
   state = { detailsOpen: false };
@@ -38,6 +28,25 @@ class Book extends Component {
   showBadge(book) {
     // show the badge only if in search mode
     return window.location.pathname === '/search' && book.hasOwnProperty('shelf');
+  }
+
+  /*
+   * Note: It seams that the check-mark that has to
+   *   show in front of the select option, if the book is in a collection, is a platform
+   *   feature that I have no control over. So I use this little
+   *   hack to display a check-mark on windows platforms
+   */
+  getOptionText(value) {
+    if (this.props.book.hasOwnProperty('shelf')) {
+      if (this.props.book.shelf === value) {
+        return `✔ ${optionText[value]}`;
+      }
+      else return `   ${optionText[value]}`;
+    }
+    if (value !== 'none') {
+      return `${optionText[value]}`;
+    }
+    return `✔ None`;
   }
 
   render() {
@@ -58,8 +67,9 @@ class Book extends Component {
               width: width,
               height: height,
               backgroundImage: coverImageUrl
-            }}/>
-          <Tooltip title={`In Collection: ${book.shelf}`}>
+            }}
+          />
+          <Tooltip title={`In Collection: ${optionText[book.shelf]}`}>
             <div style={{ display: showBadge ? '' : 'none' }} className='book-badge'/>
           </Tooltip>
           <Modal
@@ -67,7 +77,7 @@ class Book extends Component {
             aria-describedby="simple-modal-description"
             open={this.state.detailsOpen}
             onClose={this.handleDetailView}>
-            <div style={dialogStyle()}>
+            <div className='book-dialog'>
               <div
                 style={{
                   width: width,
@@ -75,7 +85,8 @@ class Book extends Component {
                   backgroundImage: coverImageUrl,
                   display: 'inline-block',
                   margin: '0px 10px 0px 0px'
-                }}/>
+                }}
+              />
               <div style={{ display: 'inline-block' }}>
                 <div>
                   <span>Title:</span><span> {Utils.getProp(['book', 'title'], this.props, 'No title information')}</span>
@@ -90,16 +101,12 @@ class Book extends Component {
             </div>
           </Modal>
           <div className="book-shelf-changer">
-            <select onChange={this.handleShelfChange} value={book.shelf}>
+            <select onChange={this.handleShelfChange} value={book.shelf || 'none'}>
               <option value="none" disabled>Move to...</option>
-              <option style={{ background: book.shelf === 'currentlyReading' ? '#acaf46' : '#fff' }}
-                      value="currentlyReading">Currently Reading
-              </option>
-              <option style={{ background: book.shelf === 'wantToRead' ? '#acaf46' : '#fff' }}
-                      value="wantToRead">Want to Read
-              </option>
-              <option style={{ background: book.shelf === 'read' ? '#acaf46' : '#fff' }} value="read">Read</option>
-              <option style={{ background: book.shelf === 'none' ? '#acaf46' : '#fff' }} value="none">None</option>
+              <option value="currentlyReading">{this.getOptionText('currentlyReading')}</option>
+              <option value="wantToRead">{this.getOptionText('wantToRead')}</option>
+              <option value="read">{this.getOptionText('read')}</option>
+              <option value="none">{this.getOptionText('none')}</option>
             </select>
           </div>
         </div>
@@ -109,4 +116,5 @@ class Book extends Component {
     );
   }
 }
+
 export default Book;

@@ -54,10 +54,11 @@ class Search extends Component {
             *  */}
             <Debounce time="800" handler="onChange">
               <input
-                onChange={this.updateQuery}
+                onChange={(e) => this.updateQuery(e.target.value)}
                 //value={query}
                 type="text"
-                placeholder="Search by title or author"/>
+                placeholder="Search by title or author"
+              />
             </Debounce>
 
           </div>
@@ -68,7 +69,8 @@ class Search extends Component {
               (<li key={book.id}>
                 <Book
                   book={this.getBookIfCollected(book)}
-                  onShelfChange={this.props.onShelfChange}/>
+                  onShelfChange={this.props.onShelfChange}
+                />
               </li>))
               :
               (this.state.query === '') ? (<div>Start typing to search for books</div>) : (<div>No results found</div>)

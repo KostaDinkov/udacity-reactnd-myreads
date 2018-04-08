@@ -71,3 +71,15 @@
     text-align: center;
     font-size: 0.8em;
 }
+
+.book-dialog {
+    position: absolute;
+    width: 80%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border: 1px solid #e5e5e5;
+    background: white;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, .5);
+    padding: 20px;
+}
