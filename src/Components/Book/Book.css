@@ -20,6 +20,7 @@
     height: 200px;
     display: flex;
     align-items: flex-end;
+    cursor: pointer;
 }
 
 .book-shelf-changer {
@@ -44,12 +45,10 @@
     width: 40px;
     height: 40px;
     border-radius: 50%;
-
     background-image: url('../../icons/badge-collected.svg');
     background-repeat: no-repeat;
     background-position: center;
     background-size: 30px;
-
 }
 
 .book-shelf-changer select {
