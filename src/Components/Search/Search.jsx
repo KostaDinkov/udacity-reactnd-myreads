@@ -30,12 +30,7 @@ class Search extends Component {
   };
 
   getBookIfCollected(resultBook) {
-    const collection = this.props.collected;
-    for (let shelf in collection) {
-      let found = collection[shelf].find((book) => book.id === resultBook.id);
-      if (found) return found;
-    }
-    return resultBook;
+    return this.props.collected.find((book) => book.id === resultBook.id) || resultBook;
   }
 
   render() {
@@ -44,14 +39,10 @@ class Search extends Component {
         <div className="search-books-bar">
           <Link to="/" className="close-search">Close</Link>
           <div className="search-books-input-wrapper">
-            {/*
-            *  Add debouncing on the input, so that we can limit the
-            *  number of search API calls to the server
-            *  */}
             <Debounce time="800" handler="onChange">
               <input
                 onChange={(e) => this.updateQuery(e.target.value)}
-                //value={query}
+                //value={query} //not working with debouncing?
                 type="text"
                 placeholder="Search by title or author"
               />

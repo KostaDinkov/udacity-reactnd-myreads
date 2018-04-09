@@ -2,16 +2,8 @@ import React, {Component} from 'react';
 import Modal from 'material-ui/Modal';
 import Tooltip from 'material-ui/Tooltip';
 import * as Utils from '../../Utils/Utils';
-import * as BooksAPI from '../../BackendAPI/BooksAPI';
+import * as appConfig from '../../Config/appConfig';
 import './Book.css';
-
-const optionText = {
-  currentlyReading: 'Currently Reading',
-  wantToRead: 'Want to Read',
-  read: 'Read',
-  none: 'None'
-};
-
 
 class Book extends Component {
   state = { detailsOpen: false };
@@ -21,8 +13,7 @@ class Book extends Component {
   };
 
   handleShelfChange = (e) => {
-    BooksAPI.update(this.props.book, e.target.value)
-            .then(() => this.props.onShelfChange());
+    this.props.onShelfChange(this.props.book, e.target.value);
   };
 
   showBadge(book) {
@@ -30,32 +21,13 @@ class Book extends Component {
     return window.location.pathname === '/search' && book.hasOwnProperty('shelf');
   }
 
-  /*
-   * Note: It seams that the check-mark that has to
-   *   show in front of the select option, if the book is in a collection, is a platform
-   *   feature that I have no control over. So I use this little
-   *   hack to display a check-mark on windows platforms
-   */
-  getOptionText(value) {
-    if (this.props.book.hasOwnProperty('shelf')) {
-      if (this.props.book.shelf === value) {
-        return `✔ ${optionText[value]}`;
-      }
-      else return `   ${optionText[value]}`;
-    }
-    if (value !== 'none') {
-      return `${optionText[value]}`;
-    }
-    return `✔ None`;
-  }
-
   render() {
-
     const book = this.props.book;
     const coverImageUrl = `url(${Utils.getProp(['book', 'imageLinks', 'smallThumbnail'], this.props, '')})`;
     const width = this.props.width || 128;
     const height = this.props.height || 193;
     const showBadge = this.showBadge(book);
+    const shelves = Object.keys(appConfig.shelves);
 
     return (
       <div className="book">
@@ -69,7 +41,7 @@ class Book extends Component {
               backgroundImage: coverImageUrl
             }}
           />
-          <Tooltip title={`In Collection: ${optionText[book.shelf]}`}>
+          <Tooltip title={`In Collection: ${Utils.getShelfName(book.shelf)}`}>
             <div style={{ display: showBadge ? '' : 'none' }} className='book-badge'/>
           </Tooltip>
           <Modal
@@ -97,16 +69,15 @@ class Book extends Component {
               <div style={{ maxHeight: '30vh', overflow: 'auto' }}>
                 <p>Description: {Utils.getProp(['book', 'description'], this.props, 'No description information')}</p>
               </div>
-
             </div>
           </Modal>
           <div className="book-shelf-changer">
             <select onChange={this.handleShelfChange} value={book.shelf || 'none'}>
               <option value="none" disabled>Move to...</option>
-              <option value="currentlyReading">{this.getOptionText('currentlyReading')}</option>
-              <option value="wantToRead">{this.getOptionText('wantToRead')}</option>
-              <option value="read">{this.getOptionText('read')}</option>
-              <option value="none">{this.getOptionText('none')}</option>
+              {shelves.map(shelf => {
+                return (<option key={shelf} value={shelf}>{Utils.getShelfName(shelf)}</option>);
+              })}
+              <option value="none">None</option>
             </select>
           </div>
         </div>
@@ -116,5 +87,4 @@ class Book extends Component {
     );
   }
 }
-
 export default Book;
