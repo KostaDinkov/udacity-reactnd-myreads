@@ -1,9 +1,11 @@
 import React from 'react';
+import {Route, Link} from 'react-router-dom';
 import * as BooksAPI from '../../BackendAPI/BooksAPI';
-import './App.css';
 import BookShelf from '../BookShelf/BookShelf';
 import Search from '../Search/Search';
-import {Route, Link} from 'react-router-dom';
+import * as appConfig from '../../Config/appConfig';
+import './App.css';
+
 
 class BooksApp extends React.Component {
   state = {
@@ -17,7 +19,6 @@ class BooksApp extends React.Component {
 
   onShelfChange = () => {
     //reload books every time a book changes shelf
-    console.log('onShelfChange called...');
     this.loadMyBooks();
   };
 
@@ -35,10 +36,7 @@ class BooksApp extends React.Component {
                      let myCollection = { currentlyReading: [], wantToRead: [], read: [] };
                      data.forEach(book => myCollection[book.shelf].push(book));
                      this.setState({ myCollection });
-                     console.log(this.state);
-
                    });
-
   }
 
   render() {

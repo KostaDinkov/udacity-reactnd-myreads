@@ -12,7 +12,6 @@ class Search extends Component {
   };
 
   updateQuery = (query) => {
-    console.log(`search input query : ${query}`);
     if (query) {
       query = query.trim();
       BooksAPI.search(query)
@@ -31,13 +30,10 @@ class Search extends Component {
   };
 
   getBookIfCollected(resultBook) {
-    let collection = this.props.collected;
+    const collection = this.props.collected;
     for (let shelf in collection) {
-      for (let book in collection[shelf]) {
-        if (collection[shelf][book].id === resultBook.id) {
-          return collection[shelf][book];
-        }
-      }
+      let found = collection[shelf].find((book) => book.id === resultBook.id);
+      if (found) return found;
     }
     return resultBook;
   }
@@ -66,12 +62,12 @@ class Search extends Component {
         <div className="search-books-results">
           <ol className="books-grid">
             {(this.state.searchResults.length > 0 && this.state.query !== '') ? this.state.searchResults.map((book) =>
-              (<li key={book.id}>
-                <Book
-                  book={this.getBookIfCollected(book)}
-                  onShelfChange={this.props.onShelfChange}
-                />
-              </li>))
+                (<li key={book.id}>
+                  <Book
+                    book={this.getBookIfCollected(book)}
+                    onShelfChange={this.props.onShelfChange}
+                  />
+                </li>))
               :
               (this.state.query === '') ? (<div>Start typing to search for books</div>) : (<div>No results found</div>)
             }

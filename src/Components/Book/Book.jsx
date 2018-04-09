@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
-import * as Utils from '../../Utils/Utils';
-import * as BooksAPI from '../../BackendAPI/BooksAPI';
 import Modal from 'material-ui/Modal';
 import Tooltip from 'material-ui/Tooltip';
+import * as Utils from '../../Utils/Utils';
+import * as BooksAPI from '../../BackendAPI/BooksAPI';
 import './Book.css';
 
 const optionText = {
